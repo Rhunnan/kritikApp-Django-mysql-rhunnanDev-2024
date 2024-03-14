@@ -55,54 +55,53 @@
 //   User(this.name, this.reviews, this.bookmarks);
 // }
 // ignore_for_file: file_names
-import 'package:hive/hive.dart';
 
 class Establishment {
-  String pathImage = "";
-  String name = "";
-  String location = "";
-  String category = "";
-  String description = "";
-  String address = "";
-  String aiScript = '';
-  List<Reviews> reviews = [];
+  String pathImage;
+  String name;
+  String location;
+  String category;
+  String description;
+  String address;
+  String aiScript;
+  List<Reviews> reviews;
 
   Establishment({
-    this.pathImage = "",
-    this.name = "",
-    this.location = "",
-    this.category = "",
-    this.description = "",
-    this.address = "",
-    this.aiScript = '',
-    this.reviews = const [],
+    required this.pathImage,
+    required this.name,
+    required this.location,
+    required this.category,
+    required this.description,
+    required this.address,
+    required this.aiScript,
+    required this.reviews,
   });
 }
 
 class Reviews {
-  String name = "";
-  String reviewComment = "";
-  double starRating = 0;
-  String imagePath = "";
-  String establishmentName = "";
+  String name;
+  String reviewComment;
+  double starRating;
+  String imagePath;
+  String establishmentName;
 
   Reviews({
-    this.name = "",
-    this.reviewComment = "",
-    this.starRating = 0,
-    this.imagePath = "",
-    this.establishmentName = "",
+    required this.name,
+    required this.reviewComment,
+    required this.starRating,
+    required this.imagePath,
+    required this.establishmentName,
   });
 }
 
 class User {
-  String name = "";
-  List<Reviews> reviews = [];
-  List<Establishment> bookmarks = [];
+  String name;
+  List<Reviews> reviews;
+  List<Establishment> bookmarks;
 
   User({
-    this.name = "",
-    this.reviews = const [],
-    this.bookmarks = const [],
+    required this.name,
+    required this.reviews,
+    required this.bookmarks,
   });
 }
