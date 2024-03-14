@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:kritik_version_2023/components/book_mark_page.dart';
 import 'package:kritik_version_2023/components/classEstablishment.dart';
@@ -14,7 +15,10 @@ void main() async {
   Hive.registerAdapter(UserAdapter());
   Hive.registerAdapter(ReviewsAdapter());
   await initHive();
-  runApp(const MyApp());
+
+  runApp(
+    const ProviderScope(child: MyApp()),
+  );
 }
 
 class MyApp extends StatelessWidget {
