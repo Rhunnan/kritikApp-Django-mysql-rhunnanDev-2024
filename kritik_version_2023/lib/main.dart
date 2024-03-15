@@ -10,12 +10,6 @@ import 'package:kritik_version_2023/components/profilePage.dart';
 import 'package:kritik_version_2023/components/profile_page.dart';
 
 void main() async {
-  await Hive.initFlutter();
-  Hive.registerAdapter(EstablishmentAdapter());
-  Hive.registerAdapter(UserAdapter());
-  Hive.registerAdapter(ReviewsAdapter());
-  await initHive();
-
   runApp(
     const ProviderScope(child: MyApp()),
   );

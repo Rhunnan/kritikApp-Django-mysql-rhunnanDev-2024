@@ -74,24 +74,45 @@ class Establishment {
     required this.description,
     required this.address,
     required this.aiScript,
-    required this.reviews,
+    required this.reviews, //return of function diri ha nga mo return og list of Reviews sa usa ka establishment use ras userID pra sa pag query ani na reviews sa usa ka establishment
   });
+
+  factory Establishment.fromJson(Map<String, dynamic> json) {
+    return Establishment(
+        pathImage: json['pathImage'],
+        name: json['name'],
+        location: json['location'],
+        category: json['category'],
+        description: json['description'],
+        address: json['address'],
+        aiScript: json['aiScript'],
+        reviews: json['reviews']);
+  }
 }
 
 class Reviews {
-  String name;
   String reviewComment;
   double starRating;
   String imagePath;
-  String establishmentName;
+  int userID;
+  int establishmentID;
 
   Reviews({
-    required this.name,
     required this.reviewComment,
     required this.starRating,
     required this.imagePath,
-    required this.establishmentName,
+    required this.userID,
+    required this.establishmentID,
   });
+
+  factory Reviews.fromJson(Map<String, dynamic> json) {
+    return Reviews(
+        reviewComment: json['reviewComment'],
+        starRating: json['starRating'],
+        imagePath: json['imagePath'],
+        userID: json['userID'],
+        establishmentID: json['establishmentID']);
+  }
 }
 
 class User {
@@ -101,7 +122,14 @@ class User {
 
   User({
     required this.name,
-    required this.reviews,
+    required this.reviews, //return og fucntion diri ha nga mo return og list of reviews use ra sa userID para sa pag query sa mga reviews ani na user
     required this.bookmarks,
   });
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+        name: json['name'],
+        reviews: json['reviews'],
+        bookmarks: json['bookmarks']);
+  }
 }
