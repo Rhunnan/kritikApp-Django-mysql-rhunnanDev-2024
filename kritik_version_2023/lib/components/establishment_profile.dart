@@ -450,12 +450,11 @@ class _EstablishmentProfileState extends State<EstablishmentProfile> {
                                                           reviewComment:
                                                               textController
                                                                   .text,
-                                                          starRating: "5",
+                                                          starRating: 5,
                                                           imagePath:
                                                               "assets/images/profile1.png",
-                                                          userId: "1",
-                                                          establishmentId: "1");
-                                                      ;
+                                                          userId: 1,
+                                                          establishmentId: 1);
 
                                                       Navigator.pop(context);
                                                       textController.clear();

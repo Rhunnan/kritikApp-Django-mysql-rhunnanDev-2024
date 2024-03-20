@@ -44,10 +44,10 @@ class Establishment {
 
 class Reviews {
   String reviewComment;
-  String starRating;
+  double starRating;
   String imagePath;
-  String userId;
-  String establishmentId;
+  int userId;
+  int establishmentId;
 
   Reviews({
     required this.reviewComment,
@@ -60,9 +60,9 @@ class Reviews {
   factory Reviews.fromJson(Map<String, dynamic> json) {
     return Reviews(
         reviewComment: json['review_comment'],
-        starRating: json['star_rating'],
+        starRating: double.parse(json['star_rating']),
         imagePath: json['image_path'],
-        userId: json['userId'],
-        establishmentId: json['establishmentId']);
+        userId: int.parse(json['userId']),
+        establishmentId: int.parse(json['establishmentId']));
   }
 }

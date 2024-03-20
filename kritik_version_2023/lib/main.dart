@@ -6,7 +6,6 @@ import 'package:kritik_version_2023/components/classEstablishment.dart';
 import 'package:kritik_version_2023/components/home_page.dart';
 import 'package:kritik_version_2023/components/fetch_data.dart';
 import 'package:kritik_version_2023/components/notification_page.dart';
-import 'package:kritik_version_2023/components/profilePage.dart';
 import 'package:kritik_version_2023/components/profile_page.dart';
 
 void main() async {
@@ -135,10 +134,6 @@ class _MyHomePageState extends State<MyHomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.turned_in),
             label: 'Saved',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
-            label: 'Notifications',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.account_circle),
