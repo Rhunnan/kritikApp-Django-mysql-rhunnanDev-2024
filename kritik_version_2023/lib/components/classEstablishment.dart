@@ -1,16 +1,19 @@
 class User {
+  int id;
   String name;
 
-  User({required this.name});
+  User({required this.id, required this.name});
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
+      id: json['custom_id'],
       name: json['name'],
     );
   }
 }
 
 class Establishment {
+  int id;
   String pathImage;
   String name;
   String location;
@@ -20,6 +23,7 @@ class Establishment {
   String aiScript;
 
   Establishment({
+    required this.id,
     required this.pathImage,
     required this.name,
     required this.location,
@@ -31,6 +35,7 @@ class Establishment {
 
   factory Establishment.fromJson(Map<String, dynamic> json) {
     return Establishment(
+      id: json['custom_id'],
       pathImage: json['path_image'],
       name: json['name'],
       location: json['location'],
@@ -43,6 +48,7 @@ class Establishment {
 }
 
 class Reviews {
+  int id;
   String reviewComment;
   double starRating;
   String imagePath;
@@ -50,6 +56,7 @@ class Reviews {
   int establishmentId;
 
   Reviews({
+    required this.id,
     required this.reviewComment,
     required this.starRating,
     required this.imagePath,
@@ -59,10 +66,11 @@ class Reviews {
 
   factory Reviews.fromJson(Map<String, dynamic> json) {
     return Reviews(
+        id: json['custom_id'],
         reviewComment: json['review_comment'],
-        starRating: double.parse(json['star_rating']),
+        starRating: json['star_rating'].toDouble(),
         imagePath: json['image_path'],
-        userId: int.parse(json['userId']),
-        establishmentId: int.parse(json['establishmentId']));
+        userId: json['user'],
+        establishmentId: json['establishment']);
   }
 }

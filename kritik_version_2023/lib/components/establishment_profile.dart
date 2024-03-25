@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kritik_version_2023/components/classEstablishment.dart';
+import 'package:kritik_version_2023/components/fetch_data.dart';
 import 'package:kritik_version_2023/components/googleMapPage.dart';
 import 'package:kritik_version_2023/components/log_in_page.dart';
 import 'package:kritik_version_2023/components/services.dart';
@@ -7,92 +9,102 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 bool isLoggedin = false;
 
-class EstablishmentProfile extends StatefulWidget {
+class EstablishmentProfile extends ConsumerStatefulWidget {
   final Establishment establishment;
   const EstablishmentProfile({required this.establishment, super.key});
 
   @override
-  State<EstablishmentProfile> createState() => _EstablishmentProfileState();
+  EstablishmentProfileState createState() => EstablishmentProfileState();
 }
 
-class _EstablishmentProfileState extends State<EstablishmentProfile> {
+class EstablishmentProfileState extends ConsumerState<EstablishmentProfile> {
   TextEditingController textController = TextEditingController();
   // final EstablishmentService _establishmentService = EstablishmentService();
 
 //kani nga function mao ni paras show alert dialog sa mga reviews kong i click tong iconbutton nga naas  pra review na button then mogawas
 //ni kay mao ni para option sa edit or delete
 
-  // void showAlertDialog(int index) {
-  //   // set up the buttons
-  //   TextEditingController controlText = TextEditingController();
-  //   //mao ni button para edit
-  //   Widget editTextButton = TextButton(
-  //     child: Text("Confirm Edit"),
-  //     onPressed: () {
-  //       _establishmentService.editReview(
-  //           index,
-  //           widget.establishment.reviews[index],
-  //           controlText,
-  //           widget.establishment);
-  //       textController.clear();
-  //       Navigator.pop(context);
-  //     },
-  //   );
-  //   Widget deleteButton = TextButton(
-  //     child: Text("Delete"),
-  //     onPressed: () {
-  //       _establishmentService.deleteReview(
-  //         widget.establishment.reviews[index],
-  //         widget.establishment,
-  //       );
-  //       Navigator.pop(context);
-  //     },
-  //   );
-  //   Widget cancelButton = TextButton(
-  //     child: Text("Cancel"),
-  //     onPressed: () {
-  //       Navigator.pop(context);
-  //     },
-  //   );
-  //   Widget editButton = TextButton(
-  //     child: Text("Edit"),
-  //     onPressed: () {
-  //       Navigator.pop(context);
+  void showAlertDialog(int index) {
+    // set up the buttons
+    TextEditingController controlText = TextEditingController();
+    //mao ni button para edit
+    Widget editTextButton = TextButton(
+      child: Text("Confirm Edit"),
+      onPressed: () {
+        //ibutang diri ang ufnction nga par edit sa reviews
+        // _establishmentService.editReview(
+        //     index,
+        //     widget.establishment.reviews[index],
+        //     controlText,
+        //     widget.establishment);
+        ref.read(reviewsProvider).editReview(index, controlText.text);
+        ref.refresh(reviewsProvider);
+        textController.clear();
+        Navigator.pop(context);
+      },
+    );
 
-  //       showDialog(
-  //           context: context,
-  //           builder: (context) {
-  //             return AlertDialog(
-  //               title: const Text('Edit Review'),
-  //               content: TextField(
-  //                 controller: controlText,
-  //                 decoration:
-  //                     InputDecoration(hintText: "Edit your Comment here"),
-  //               ),
-  //               actions: [cancelButton, editTextButton],
-  //             );
-  //           });
-  //     },
-  //   );
+    Widget deleteButton = TextButton(
+      child: Text("Delete"),
+      onPressed: () {
+        ref.read(reviewsProvider).deleteReview(index);
+        ref.refresh(reviewsProvider);
+        //ibutang diri ang ufnction nga par delete sa review
 
-  //   // set up the AlertDialog
-  //   AlertDialog alert = AlertDialog(
-  //     title: Text("Options"),
-  //     actions: [deleteButton, editButton, cancelButton],
-  //   );
+        // _establishmentService.deleteReview(
+        //   widget.establishment.reviews[index],
+        //   widget.establishment,
+        // );
+        Navigator.pop(context);
+      },
+    );
 
-  //   // show the dialog
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return alert;
-  //     },
-  //   );
-  // }
+    Widget cancelButton = TextButton(
+      child: Text("Cancel"),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+    Widget editButton = TextButton(
+      child: Text("Edit"),
+      onPressed: () {
+        Navigator.pop(context);
+
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text('Edit Review'),
+                content: TextField(
+                  controller: controlText,
+                  decoration:
+                      InputDecoration(hintText: "Edit your Comment here"),
+                ),
+                actions: [cancelButton, editTextButton],
+              );
+            });
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Options"),
+      actions: [deleteButton, editButton, cancelButton],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
 
 //STARTING RON DKO MALIBOG HAHHAHAHAH TAAS NKAY ANG CODE
   @override
   Widget build(BuildContext context) {
+    final reviewsDataDisplay = ref.watch(reviewsDataProvider);
     return Scaffold(
         body: SlidingUpPanel(
       //background of teh sliding panel
@@ -446,16 +458,26 @@ class _EstablishmentProfileState extends State<EstablishmentProfile> {
                                                             );
                                                           });
                                                     } else {
-                                                      Reviews(
-                                                          reviewComment:
+                                                      ref
+                                                          .read(reviewsProvider)
+                                                          .createReview(
                                                               textController
                                                                   .text,
-                                                          starRating: 5,
-                                                          imagePath:
-                                                              "assets/images/profile1.png",
-                                                          userId: 1,
-                                                          establishmentId: 1);
-
+                                                              widget
+                                                                  .establishment
+                                                                  .id);
+                                                      // Reviews(
+                                                      //     id: 10,
+                                                      //     reviewComment:
+                                                      //         textController
+                                                      //             .text,
+                                                      //     starRating: 5,
+                                                      //     imagePath:
+                                                      //         "assets/images/profile1.png",
+                                                      //     userId: 1,
+                                                      //     establishmentId: 1);
+                                                      ref.refresh(
+                                                          reviewsProvider);
                                                       Navigator.pop(context);
                                                       textController.clear();
 
@@ -523,132 +545,161 @@ class _EstablishmentProfileState extends State<EstablishmentProfile> {
                               child:
                                   Image.asset("assets/images/plusButton.png"))),
                     ), //reviewss partss
-                    // Padding(
-                    //   padding: const EdgeInsets.only(left: 20, bottom: 20),
-                    //   child: SizedBox(
-                    //       height: 215,
-                    //       width: 360,
-                    //       child: ListView.builder(
-                    //         controller: controller,
-                    //         itemCount: widget.establishment.reviews.length,
-                    //         itemBuilder: (context, index) {
-                    //           return Padding(
-                    //             padding: const EdgeInsets.only(bottom: 30),
-                    //             child: Column(
-                    //               children: [
-                    //                 //profile image part of the review, star rating and name
-                    //                 Row(
-                    //                   children: [
-                    //                     Container(
-                    //                       height: 43,
-                    //                       width: 43,
-                    //                       decoration: BoxDecoration(
-                    //                           borderRadius:
-                    //                               BorderRadius.circular(50),
-                    //                           image: DecorationImage(
-                    //                               image: AssetImage(widget
-                    //                                   .establishment
-                    //                                   .reviews[index]
-                    //                                   .imagePath))),
-                    //                     ),
-                    //                     //names and star rating
-                    //                     Column(
-                    //                       children: [
-                    //                         Padding(
-                    //                           padding: const EdgeInsets.only(
-                    //                               left: 10, right: 30),
-                    //                           child: SizedBox(
-                    //                             height: 20,
-                    //                             width: 100,
-                    //                             child: Text(widget.establishment
-                    //                                 .reviews[index].starRating
-                    //                                 .toString()),
-                    //                           ),
-                    //                         ),
-                    //                         Image.asset(
-                    //                             "assets/images/starRatingFilled.png"),
-                    //                       ],
-                    //                     ),
-                    //                     //para edit nga function og delete or button
-                    //                     Padding(
-                    //                       padding:
-                    //                           const EdgeInsets.only(left: 70),
-                    //                       child: IconButton(
-                    //                         iconSize: 25,
-                    //                         icon: const Icon(Icons.edit),
-                    //                         onPressed: () {
-                    //                           showAlertDialog(index);
-                    //                         },
-                    //                       ),
-                    //                     )
-                    //                   ],
-                    //                 ),
-                    //                 //review or the comment of the user
-                    //                 Padding(
-                    //                   padding: const EdgeInsets.only(
-                    //                       top: 10, bottom: 10, right: 30),
-                    //                   child: SizedBox(
-                    //                     width: 300,
-                    //                     child: Text(widget.establishment
-                    //                         .reviews[index].reviewComment),
-                    //                   ),
-                    //                 ),
-                    //                 Row(children: [
-                    //                   SizedBox(
-                    //                     height: 100,
-                    //                     width: 300,
-                    //                     child: ListView(
-                    //                       scrollDirection: Axis.horizontal,
-                    //                       children: [
-                    //                         Padding(
-                    //                           padding:
-                    //                               const EdgeInsets.all(2.0),
-                    //                           child: SizedBox(
-                    //                             height: 70,
-                    //                             width: 100,
-                    //                             child: Image.asset(
-                    //                               "assets/images/chowi.png",
-                    //                               height: 70,
-                    //                               width: 100,
-                    //                             ),
-                    //                           ),
-                    //                         ),
-                    //                         Padding(
-                    //                           padding:
-                    //                               const EdgeInsets.all(2.0),
-                    //                           child: SizedBox(
-                    //                             height: 70,
-                    //                             width: 100,
-                    //                             child: Image.asset(
-                    //                               "assets/images/chowi.png",
-                    //                               height: 70,
-                    //                               width: 150,
-                    //                             ),
-                    //                           ),
-                    //                         ),
-                    //                         Padding(
-                    //                           padding:
-                    //                               const EdgeInsets.all(2.0),
-                    //                           child: SizedBox(
-                    //                             height: 70,
-                    //                             width: 100,
-                    //                             child: Image.asset(
-                    //                               "assets/images/chowi.png",
-                    //                               height: 70,
-                    //                               width: 150,
-                    //                             ),
-                    //                           ),
-                    //                         ),
-                    //                       ],
-                    //                     ),
-                    //                   )
-                    //                 ])
-                    //               ],
-                    //             ),
-                    //           );
-                    //         },
-                    //       )),
-                    // ),
+                    reviewsDataDisplay.when(
+                        data: (reviews) {
+                          List<Reviews> reviewsList = reviews
+                              .map((e) => e)
+                              .where((element) =>
+                                  element.establishmentId ==
+                                  widget.establishment.id)
+                              .toList();
+                          print("\n\n\n\n\n lenght of reviewlist");
+                          print(widget.establishment.id);
+                          print(reviewsList.length);
+
+                          return Padding(
+                            padding:
+                                const EdgeInsets.only(left: 20, bottom: 20),
+                            child: SizedBox(
+                                height: 215,
+                                width: 360,
+                                child: ListView.builder(
+                                  controller: controller,
+                                  itemCount: reviewsList.length,
+                                  itemBuilder: (context, index) {
+                                    return Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 30),
+                                      child: Column(
+                                        children: [
+                                          //profile image part of the review, star rating and name
+                                          Row(
+                                            children: [
+                                              Container(
+                                                height: 43,
+                                                width: 43,
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            50),
+                                                    image: DecorationImage(
+                                                        image: AssetImage(
+                                                            reviewsList[index]
+                                                                .imagePath))),
+                                              ),
+                                              //names and star rating
+                                              Column(
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 10,
+                                                            right: 30),
+                                                    child: SizedBox(
+                                                      height: 20,
+                                                      width: 100,
+                                                      child: Text(
+                                                        (reviewsList[index]
+                                                            .starRating
+                                                            .toString()),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Image.asset(
+                                                      "assets/images/starRatingFilled.png"),
+                                                ],
+                                              ),
+                                              //para edit nga function og delete or button
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 70),
+                                                child: IconButton(
+                                                  iconSize: 25,
+                                                  icon: const Icon(Icons.edit),
+                                                  onPressed: () {
+                                                    showAlertDialog(
+                                                        reviewsList[index].id);
+                                                  },
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                          //review or the comment of the user
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 10, bottom: 10, right: 30),
+                                            child: SizedBox(
+                                              width: 300,
+                                              child: Text(reviewsList[index]
+                                                  .reviewComment),
+                                            ),
+                                          ),
+                                          Row(children: [
+                                            SizedBox(
+                                              height: 100,
+                                              width: 300,
+                                              child: ListView(
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            2.0),
+                                                    child: SizedBox(
+                                                      height: 70,
+                                                      width: 100,
+                                                      child: Image.asset(
+                                                        "assets/images/chowi.png",
+                                                        height: 70,
+                                                        width: 100,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            2.0),
+                                                    child: SizedBox(
+                                                      height: 70,
+                                                      width: 100,
+                                                      child: Image.asset(
+                                                        "assets/images/chowi.png",
+                                                        height: 70,
+                                                        width: 150,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            2.0),
+                                                    child: SizedBox(
+                                                      height: 70,
+                                                      width: 100,
+                                                      child: Image.asset(
+                                                        "assets/images/chowi.png",
+                                                        height: 70,
+                                                        width: 150,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            )
+                                          ])
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                )),
+                          );
+                        },
+                        error: (error, s) =>
+                            Text("${error.toString()} naay error "),
+                        loading: () => const Center(
+                              child: CircularProgressIndicator(),
+                            ))
                   ],
                 ),
               )
